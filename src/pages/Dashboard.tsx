@@ -4,6 +4,7 @@ import { useCourses } from '@/hooks/useCourses';
 import AppLayout from '@/components/layout/AppLayout';
 import CourseCard from '@/components/courses/CourseCard';
 import LearningActivityChart from '@/components/dashboard/LearningActivityChart';
+import StreakTracker from '@/components/dashboard/StreakTracker';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BookOpen, Trophy, Clock, TrendingUp, AlertCircle, Filter } from 'lucide-react';
@@ -144,8 +145,13 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Learning Activity Chart */}
-        <LearningActivityChart courses={courses} />
+        {/* Learning Activity & Streak Section */}
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <LearningActivityChart courses={courses} />
+          </div>
+          <StreakTracker courses={courses} />
+        </div>
 
         {/* In Progress Section */}
         {stats.inProgress > 0 && (
