@@ -25,14 +25,13 @@ import {
   AlertCircle,
   CheckCircle2,
   XCircle,
-  ArrowLeft,
 } from 'lucide-react';
 import CourseEditor from '@/components/admin/CourseEditor';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { isAdmin, isLoading: authLoading } = useAuthContext();
-  const { employees, courseStats, recentAttempts, isLoading, error, refetch } = useAdminData();
+  const { employees, courseStats, recentAttempts, isLoading, refetch } = useAdminData();
   const [showCourseEditor, setShowCourseEditor] = useState(false);
   const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
 
@@ -96,12 +95,6 @@ const AdminDashboard = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')}>
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
-              </Button>
-            </div>
             <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
             <p className="text-muted-foreground">Manage courses and monitor employee progress</p>
           </div>
