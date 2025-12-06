@@ -7,9 +7,14 @@ import { AuthProvider, useAuthContext } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import CoursesPage from "./pages/CoursesPage";
 import CoursePage from "./pages/CoursePage";
 import TestPage from "./pages/TestPage";
+import CertificatesPage from "./pages/CertificatesPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminCoursesPage from "./pages/AdminCoursesPage";
+import AdminEmployeesPage from "./pages/AdminEmployeesPage";
+import AdminReportsPage from "./pages/AdminReportsPage";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
 
@@ -74,6 +79,14 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/courses"
+        element={
+          <ProtectedRoute>
+            <CoursesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/course/:id"
         element={
           <ProtectedRoute>
@@ -90,10 +103,42 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/certificates"
+        element={
+          <ProtectedRoute>
+            <CertificatesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/admin"
         element={
           <ProtectedRoute>
             <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/courses"
+        element={
+          <ProtectedRoute>
+            <AdminCoursesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/employees"
+        element={
+          <ProtectedRoute>
+            <AdminEmployeesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/reports"
+        element={
+          <ProtectedRoute>
+            <AdminReportsPage />
           </ProtectedRoute>
         }
       />

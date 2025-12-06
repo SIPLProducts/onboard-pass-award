@@ -1,10 +1,17 @@
-import { Question } from '@/types/lms';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
+interface QuestionData {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation?: string;
+}
+
 interface TestQuestionProps {
-  question: Question;
+  question: QuestionData;
   questionNumber: number;
   totalQuestions: number;
   selectedAnswer: number | null;
