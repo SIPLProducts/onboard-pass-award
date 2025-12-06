@@ -6,6 +6,7 @@ import LearningActivityChart from '@/components/dashboard/LearningActivityChart'
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BookOpen, Trophy, Clock, TrendingUp, AlertCircle } from 'lucide-react';
+import learningHero from '@/assets/learning-hero.png';
 
 const Dashboard = () => {
   const { user, profile } = useAuthContext();
@@ -56,16 +57,23 @@ const Dashboard = () => {
   return (
     <AppLayout>
       <div className="space-y-8">
-        {/* Welcome Section */}
-        <div className="animate-fade-in">
-          <h1 className="text-3xl font-bold text-foreground">
-            Welcome back, {profile?.full_name.split(' ')[0]}! 👋
-          </h1>
-          <p className="mt-2 text-muted-foreground">
-            {courses.length > 0
-              ? `Continue your learning journey. You have ${courses.length - stats.completed} courses to complete.`
-              : 'No courses available yet. Check back later!'}
-          </p>
+        {/* Hero Banner */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary/90 to-primary animate-fade-in">
+          <img 
+            src={learningHero} 
+            alt="Learning illustration" 
+            className="absolute inset-0 h-full w-full object-cover opacity-30 mix-blend-overlay"
+          />
+          <div className="relative z-10 p-8 md:p-12">
+            <h1 className="text-3xl md:text-4xl font-bold text-primary-foreground">
+              Welcome back, {profile?.full_name.split(' ')[0]}! 👋
+            </h1>
+            <p className="mt-3 text-lg text-primary-foreground/90 max-w-xl">
+              {courses.length > 0
+                ? `Continue your learning journey. You have ${courses.length - stats.completed} courses to complete.`
+                : 'No courses available yet. Check back later!'}
+            </p>
+          </div>
         </div>
 
         {/* Stats Cards */}
