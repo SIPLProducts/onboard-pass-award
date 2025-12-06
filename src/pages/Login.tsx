@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
 import logo from '@/assets/logo.png';
+import learningHero from '@/assets/learning-hero.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -134,8 +135,19 @@ const Login = () => {
     <div className="flex min-h-screen">
       {/* Left side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 gradient-hero relative overflow-hidden">
+        {/* Background pattern */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-40" />
-        <div className="relative z-10 flex flex-col justify-center p-12 text-primary-foreground">
+        
+        {/* Hero Image */}
+        <div className="absolute bottom-0 right-0 w-[85%] h-[60%] pointer-events-none">
+          <img 
+            src={learningHero} 
+            alt="Learning illustration" 
+            className="w-full h-full object-contain object-bottom drop-shadow-2xl"
+          />
+        </div>
+        
+        <div className="relative z-10 flex flex-col justify-start p-12 text-primary-foreground">
           <div className="mb-8 flex items-center gap-3">
             <img src={logo} alt="LearnHub" className="h-14 w-auto" />
             <div>
@@ -153,24 +165,24 @@ const Login = () => {
             Access curated courses, complete certifications, and track your learning journey all in one place.
           </p>
 
-          <div className="mt-12 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/20">
-                <span className="text-lg">📚</span>
+          <div className="mt-8 space-y-3">
+            <div className="flex items-center gap-3 bg-primary-foreground/10 backdrop-blur-sm rounded-lg px-4 py-2 w-fit">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-foreground/20">
+                <span className="text-base">📚</span>
               </div>
-              <span className="text-sm">Interactive video courses with assessments</span>
+              <span className="text-sm font-medium">Interactive video courses with assessments</span>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/20">
-                <span className="text-lg">🎓</span>
+            <div className="flex items-center gap-3 bg-primary-foreground/10 backdrop-blur-sm rounded-lg px-4 py-2 w-fit">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-foreground/20">
+                <span className="text-base">🎓</span>
               </div>
-              <span className="text-sm">Earn certificates upon completion</span>
+              <span className="text-sm font-medium">Earn certificates upon completion</span>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/20">
-                <span className="text-lg">📈</span>
+            <div className="flex items-center gap-3 bg-primary-foreground/10 backdrop-blur-sm rounded-lg px-4 py-2 w-fit">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-foreground/20">
+                <span className="text-base">📈</span>
               </div>
-              <span className="text-sm">Track progress and achievements</span>
+              <span className="text-sm font-medium">Track progress and achievements</span>
             </div>
           </div>
         </div>
