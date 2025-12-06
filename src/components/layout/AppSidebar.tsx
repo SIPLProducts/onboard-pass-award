@@ -55,12 +55,8 @@ const AppSidebar = () => {
   };
 
   const handleLogout = async () => {
-    const { error } = await signOut();
-    if (error) {
-      toast.error('Error signing out');
-    } else {
-      navigate('/login');
-    }
+    await signOut();
+    navigate('/login');
   };
 
   const getInitials = (name: string) => {
