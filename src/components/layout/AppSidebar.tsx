@@ -16,7 +16,7 @@ import {
   SidebarFooter,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
@@ -194,6 +194,7 @@ const AppSidebar = () => {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Avatar className="h-8 w-8 shrink-0">
+                    <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name} />
                     <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
                       {profile ? getInitials(profile.full_name) : 'U'}
                     </AvatarFallback>
@@ -230,6 +231,10 @@ const AppSidebar = () => {
                   </div>
                 )}
                 <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/settings')}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Profile Settings
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout} className="text-destructive">
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign out
