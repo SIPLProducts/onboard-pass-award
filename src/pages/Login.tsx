@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useDemoContext } from '@/contexts/DemoContext';
+import logo from '@/assets/logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { BookOpen, Loader2, Mail, Lock, User, Building, BadgeCheck, Eye } from 'lucide-react';
+import { Loader2, Mail, Lock, User, Building, BadgeCheck, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -141,9 +142,7 @@ const Login = () => {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-40" />
         <div className="relative z-10 flex flex-col justify-center p-12 text-primary-foreground">
           <div className="mb-8 flex items-center gap-3">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-foreground/20 backdrop-blur-sm">
-              <BookOpen className="h-8 w-8" />
-            </div>
+            <img src={logo} alt="LearnHub" className="h-14 w-auto" />
             <div>
               <h1 className="text-2xl font-bold">LearnHub</h1>
               <p className="text-sm opacity-80">Employee Learning Portal</p>
@@ -186,8 +185,8 @@ const Login = () => {
       <div className="flex w-full items-center justify-center p-8 lg:w-1/2">
         <Card className="w-full max-w-md border-0 shadow-xl">
           <CardHeader className="space-y-1 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl gradient-primary lg:hidden">
-              <BookOpen className="h-6 w-6 text-primary-foreground" />
+            <div className="mx-auto mb-4 lg:hidden">
+              <img src={logo} alt="LearnHub" className="h-12 w-auto" />
             </div>
             <CardTitle className="text-2xl font-bold">Welcome</CardTitle>
             <CardDescription>Sign in or create an account to continue</CardDescription>
