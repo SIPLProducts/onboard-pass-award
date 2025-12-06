@@ -3,7 +3,7 @@ import { useTheme } from 'next-themes';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useColorTheme, colorThemes } from '@/contexts/ColorThemeContext';
 import { NavLink } from '@/components/NavLink';
-import logo from '@/assets/kpc-logo.png';
+
 import {
   Sidebar,
   SidebarContent,
@@ -93,16 +93,7 @@ const AppSidebar = () => {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b border-sidebar-border">
-        <div
-          className="flex cursor-pointer items-center justify-center px-3 py-4"
-          onClick={() => navigate('/dashboard')}
-        >
-          <div className={`flex items-center justify-center rounded-xl bg-white p-3 shadow-lg transition-all duration-300 hover:shadow-xl ${collapsed ? "h-11 w-11" : "h-24 w-24"}`}>
-            <img src={logo} alt="KPC" className={`object-contain ${collapsed ? "h-7 w-auto" : "h-16 w-auto"}`} />
-          </div>
-        </div>
-      </SidebarHeader>
+      <SidebarHeader className="border-b border-sidebar-border py-4" />
 
       <SidebarContent>
         {/* Main Navigation */}
