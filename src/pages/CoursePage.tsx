@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useCourses } from '@/contexts/CourseContext';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { useCourse } from '@/hooks/useCourses';
 import AppLayout from '@/components/layout/AppLayout';
 import VideoPlayer from '@/components/courses/VideoPlayer';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Clock,
   BookOpen,
@@ -15,19 +17,69 @@ import {
   ArrowRight,
   FileText,
   AlertCircle,
+  Download,
 } from 'lucide-react';
+import { generateCertificate } from '@/utils/certificate';
 
 const CoursePage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getCourse, updateCourseProgress, getQuestions } = useCourses();
+  const { user, profile } = useAuthContext();
+  const { course, questions, isLoading, error, updateProgress } = useCourse(id || '', user?.id);
+  const [videoProgress, setVideoProgress] = useState(0);
   const [videoCompleted, setVideoCompleted] = useState(false);
-  const [progress, setProgress] = useState(0);
 
-  const course = getCourse(id || '');
-  const questions = getQuestions(id || '');
+  useEffect(() => {
+    if (course?.progress) {
+      setVideoProgress(course.progress.video_progress);
+      setVideoCompleted(course.progress.video_completed);
+    }
+  }, [course?.progress]);
 
-  if (!course) {
+  const handleVideoComplete = () => {
+    setVideoCompleted(true);
+    updateProgress(100, true);
+  };
+
+  const handleVideoProgress = (progress: number) => {
+    setVideoProgress(progress);
+    if (progress > 10) {
+      updateProgress(progress, progress >= 80);
+    }
+  };
+
+  const canStartTest = videoCompleted || videoProgress >= 80 || course?.certificate;
+
+  const handleDownloadCertificate = () => {
+    if (!profile || !course || !course.certificate) return;
+
+    generateCertificate({
+      id: course.certificate.certificate_number,
+      courseId: course.id,
+      courseName: course.title,
+      employeeName: profile.full_name,
+      employeeId: profile.employee_id,
+      score: course.certificate.score,
+      completedAt: course.certificate.issued_at,
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <AppLayout>
+        <div className="mx-auto max-w-5xl space-y-8">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="aspect-video w-full" />
+          <div className="grid gap-6 md:grid-cols-2">
+            <Skeleton className="h-48" />
+            <Skeleton className="h-48" />
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
+
+  if (error || !course) {
     return (
       <AppLayout>
         <div className="flex flex-col items-center justify-center py-20">
@@ -40,20 +92,6 @@ const CoursePage = () => {
       </AppLayout>
     );
   }
-
-  const handleVideoComplete = () => {
-    setVideoCompleted(true);
-    updateCourseProgress(course.id, 50);
-  };
-
-  const handleVideoProgress = (prog: number) => {
-    setProgress(prog);
-    if (prog > 10 && course.status === 'not_started') {
-      updateCourseProgress(course.id, Math.min(prog / 2, 45));
-    }
-  };
-
-  const canStartTest = videoCompleted || course.status === 'completed' || progress > 80;
 
   return (
     <AppLayout>
@@ -76,14 +114,22 @@ const CoursePage = () => {
             <Badge variant="outline" className="bg-primary/10 text-primary">
               {course.category}
             </Badge>
-            <div className="flex items-center gap-1 text-sm text-muted-foreground">
-              <Clock className="h-4 w-4" />
-              {course.duration}
-            </div>
+            {course.duration && (
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <Clock className="h-4 w-4" />
+                {course.duration}
+              </div>
+            )}
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
               <Target className="h-4 w-4" />
-              Pass: {course.passPercentage}%
+              Pass: {course.pass_percentage}%
             </div>
+            {course.certificate && (
+              <Badge className="bg-success/10 text-success">
+                <CheckCircle2 className="mr-1 h-3 w-3" />
+                Completed
+              </Badge>
+            )}
           </div>
 
           <h1 className="text-3xl font-bold text-foreground">{course.title}</h1>
@@ -91,13 +137,15 @@ const CoursePage = () => {
         </div>
 
         {/* Video Player */}
-        <div className="animate-slide-up">
-          <VideoPlayer
-            videoUrl={course.videoUrl}
-            onComplete={handleVideoComplete}
-            onProgress={handleVideoProgress}
-          />
-        </div>
+        {course.video_url && (
+          <div className="animate-slide-up">
+            <VideoPlayer
+              videoUrl={course.video_url}
+              onComplete={handleVideoComplete}
+              onProgress={handleVideoProgress}
+            />
+          </div>
+        )}
 
         {/* Course Info Cards */}
         <div className="grid gap-6 md:grid-cols-2">
@@ -116,7 +164,7 @@ const CoursePage = () => {
                   </div>
                   <span className="font-medium">Video Lesson</span>
                 </div>
-                {(videoCompleted || progress > 80) && (
+                {(videoCompleted || videoProgress >= 80) && (
                   <CheckCircle2 className="h-5 w-5 text-success" />
                 )}
               </div>
@@ -128,9 +176,7 @@ const CoursePage = () => {
                   </div>
                   <span className="font-medium">Assessment ({questions.length} questions)</span>
                 </div>
-                {course.status === 'completed' && (
-                  <CheckCircle2 className="h-5 w-5 text-success" />
-                )}
+                {course.certificate && <CheckCircle2 className="h-5 w-5 text-success" />}
               </div>
             </CardContent>
           </Card>
@@ -150,7 +196,7 @@ const CoursePage = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Pass Percentage</span>
-                  <span className="font-medium">{course.passPercentage}%</span>
+                  <span className="font-medium">{course.pass_percentage}%</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Time Limit</span>
@@ -162,11 +208,11 @@ const CoursePage = () => {
                 </div>
               </div>
 
-              {course.status === 'completed' && course.score && (
+              {course.certificate && course.latestAttempt && (
                 <div className="rounded-lg bg-success/10 p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-success">Your Score</span>
-                    <span className="text-2xl font-bold text-success">{course.score}%</span>
+                    <span className="text-2xl font-bold text-success">{course.latestAttempt.score}%</span>
                   </div>
                 </div>
               )}
@@ -181,9 +227,9 @@ const CoursePage = () => {
               <div className="flex-1 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-foreground">Video Progress</span>
-                  <span className="text-sm text-muted-foreground">{Math.round(progress)}%</span>
+                  <span className="text-sm text-muted-foreground">{Math.round(videoProgress)}%</span>
                 </div>
-                <Progress value={progress} className="h-2" />
+                <Progress value={videoProgress} className="h-2" />
                 {!canStartTest && (
                   <p className="text-xs text-muted-foreground">
                     Watch at least 80% of the video to unlock the assessment
@@ -191,15 +237,23 @@ const CoursePage = () => {
                 )}
               </div>
 
-              <Button
-                size="lg"
-                className="gradient-primary text-primary-foreground shadow-lg hover:opacity-90"
-                disabled={!canStartTest}
-                onClick={() => navigate(`/course/${course.id}/test`)}
-              >
-                {course.status === 'completed' ? 'Retake Test' : 'Start Assessment'}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <div className="flex gap-3">
+                {course.certificate && (
+                  <Button variant="outline" onClick={handleDownloadCertificate}>
+                    <Download className="mr-2 h-4 w-4" />
+                    Certificate
+                  </Button>
+                )}
+                <Button
+                  size="lg"
+                  className="gradient-primary text-primary-foreground shadow-lg hover:opacity-90"
+                  disabled={!canStartTest || questions.length === 0}
+                  onClick={() => navigate(`/course/${course.id}/test`)}
+                >
+                  {course.certificate ? 'Retake Test' : 'Start Assessment'}
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

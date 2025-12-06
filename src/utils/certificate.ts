@@ -1,7 +1,16 @@
 import jsPDF from 'jspdf';
-import { Certificate } from '@/types/lms';
 
-export const generateCertificate = (certificate: Certificate) => {
+interface CertificateData {
+  id: string;
+  courseId: string;
+  courseName: string;
+  employeeName: string;
+  employeeId: string;
+  score: number;
+  completedAt: string;
+}
+
+export const generateCertificate = (certificate: CertificateData) => {
   const doc = new jsPDF({
     orientation: 'landscape',
     unit: 'mm',
