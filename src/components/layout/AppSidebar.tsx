@@ -93,12 +93,12 @@ const AppSidebar = () => {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b border-sidebar-border p-0">
+      <SidebarHeader className="h-14 border-b border-sidebar-border p-0 overflow-hidden">
         <div
           className="flex h-full w-full cursor-pointer items-center justify-center"
           onClick={() => navigate('/dashboard')}
         >
-          <img src={logo} alt="KPC LearnHub" className={`object-cover w-full transition-all duration-300 hover:opacity-90 ${collapsed ? "h-12" : "h-16"}`} />
+          <img src={logo} alt="KPC LearnHub" className={`object-cover transition-all duration-300 hover:opacity-90 ${collapsed ? "h-14 w-auto" : "h-14 w-full"}`} />
         </div>
       </SidebarHeader>
 
