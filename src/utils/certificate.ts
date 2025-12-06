@@ -1,4 +1,5 @@
 import jsPDF from 'jspdf';
+import logoImg from '@/assets/logo.png';
 
 interface CertificateData {
   id: string;
@@ -10,7 +11,29 @@ interface CertificateData {
   completedAt: string;
 }
 
-export const generateCertificate = (certificate: CertificateData) => {
+// Convert image URL to base64
+const getBase64FromUrl = async (url: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL('image/png'));
+      } else {
+        reject(new Error('Could not get canvas context'));
+      }
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+};
+
+export const generateCertificate = async (certificate: CertificateData) => {
   const doc = new jsPDF({
     orientation: 'landscape',
     unit: 'mm',
@@ -34,40 +57,51 @@ export const generateCertificate = (certificate: CertificateData) => {
   doc.setLineWidth(0.5);
   doc.rect(15, 15, pageWidth - 30, pageHeight - 30);
 
-  // Certificate title
+  // Add logo at the top
+  try {
+    const logoBase64 = await getBase64FromUrl(logoImg);
+    // Logo dimensions - maintaining aspect ratio
+    const logoHeight = 15;
+    const logoWidth = 40; // Approximate width based on logo aspect ratio
+    doc.addImage(logoBase64, 'PNG', pageWidth / 2 - logoWidth / 2, 35, logoWidth, logoHeight);
+  } catch (error) {
+    console.error('Failed to load logo:', error);
+  }
+
+  // Certificate title - moved down to accommodate logo
   doc.setTextColor(13, 148, 136);
   doc.setFontSize(14);
   doc.setFont('helvetica', 'normal');
-  doc.text('CERTIFICATE OF COMPLETION', pageWidth / 2, 50, { align: 'center' });
+  doc.text('CERTIFICATE OF COMPLETION', pageWidth / 2, 58, { align: 'center' });
 
   // Main title
   doc.setTextColor(30, 41, 59);
   doc.setFontSize(36);
   doc.setFont('helvetica', 'bold');
-  doc.text('Course Completion', pageWidth / 2, 70, { align: 'center' });
+  doc.text('Course Completion', pageWidth / 2, 75, { align: 'center' });
 
   // Decorative line
   doc.setDrawColor(13, 148, 136);
   doc.setLineWidth(1);
-  doc.line(pageWidth / 2 - 50, 78, pageWidth / 2 + 50, 78);
+  doc.line(pageWidth / 2 - 50, 82, pageWidth / 2 + 50, 82);
 
   // This is to certify
   doc.setTextColor(100, 116, 139);
   doc.setFontSize(12);
   doc.setFont('helvetica', 'normal');
-  doc.text('This is to certify that', pageWidth / 2, 95, { align: 'center' });
+  doc.text('This is to certify that', pageWidth / 2, 98, { align: 'center' });
 
   // Employee name
   doc.setTextColor(30, 41, 59);
   doc.setFontSize(28);
   doc.setFont('helvetica', 'bold');
-  doc.text(certificate.employeeName, pageWidth / 2, 112, { align: 'center' });
+  doc.text(certificate.employeeName, pageWidth / 2, 114, { align: 'center' });
 
   // Employee ID
   doc.setTextColor(100, 116, 139);
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Employee ID: ${certificate.employeeId}`, pageWidth / 2, 122, { align: 'center' });
+  doc.text(`Employee ID: ${certificate.employeeId}`, pageWidth / 2, 124, { align: 'center' });
 
   // has successfully completed
   doc.setTextColor(100, 116, 139);
@@ -78,13 +112,13 @@ export const generateCertificate = (certificate: CertificateData) => {
   doc.setTextColor(13, 148, 136);
   doc.setFontSize(20);
   doc.setFont('helvetica', 'bold');
-  doc.text(certificate.courseName, pageWidth / 2, 155, { align: 'center' });
+  doc.text(certificate.courseName, pageWidth / 2, 153, { align: 'center' });
 
   // Score
   doc.setTextColor(30, 41, 59);
   doc.setFontSize(14);
   doc.setFont('helvetica', 'normal');
-  doc.text(`with a score of ${certificate.score}%`, pageWidth / 2, 168, { align: 'center' });
+  doc.text(`with a score of ${certificate.score}%`, pageWidth / 2, 165, { align: 'center' });
 
   // Date
   const formattedDate = new Date(certificate.completedAt).toLocaleDateString('en-US', {
@@ -94,7 +128,7 @@ export const generateCertificate = (certificate: CertificateData) => {
   });
   doc.setTextColor(100, 116, 139);
   doc.setFontSize(11);
-  doc.text(`Completed on ${formattedDate}`, pageWidth / 2, 180, { align: 'center' });
+  doc.text(`Completed on ${formattedDate}`, pageWidth / 2, 176, { align: 'center' });
 
   // Signature line
   doc.setDrawColor(200, 200, 200);

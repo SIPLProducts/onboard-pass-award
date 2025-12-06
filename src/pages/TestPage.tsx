@@ -130,10 +130,10 @@ const TestPage = () => {
     setTestResult(null);
   };
 
-  const handleDownloadCertificate = () => {
+  const handleDownloadCertificate = async () => {
     if (!profile || !course || !testResult) return;
 
-    generateCertificate({
+    await generateCertificate({
       id: `CERT-${Date.now()}`,
       courseId: course.id,
       courseName: course.title,
