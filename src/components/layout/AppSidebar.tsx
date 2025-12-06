@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { NavLink } from '@/components/NavLink';
+import logo from '@/assets/logo.png';
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +26,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
-  BookOpen,
   LayoutDashboard,
   GraduationCap,
   Award,
@@ -35,6 +35,7 @@ import {
   LogOut,
   ChevronUp,
   Shield,
+  BookOpen,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -83,9 +84,7 @@ const AppSidebar = () => {
           className="flex cursor-pointer items-center gap-3 px-2 py-3"
           onClick={() => navigate('/dashboard')}
         >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg gradient-primary">
-            <BookOpen className="h-5 w-5 text-primary-foreground" />
-          </div>
+          <img src={logo} alt="LearnHub" className="h-9 w-auto shrink-0" />
           {!collapsed && (
             <div className="flex flex-col">
               <span className="text-sm font-semibold text-sidebar-foreground">LearnHub</span>
