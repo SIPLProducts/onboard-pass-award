@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from 'next-themes';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { useColorTheme, colorThemes } from '@/contexts/ColorThemeContext';
 import { NavLink } from '@/components/NavLink';
 import logo from '@/assets/logo.png';
 import {
@@ -39,6 +40,7 @@ import {
   BookOpen,
   Sun,
   Moon,
+  Palette,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -48,10 +50,18 @@ const AppSidebar = () => {
   const navigate = useNavigate();
   const { state } = useSidebar();
   const { theme, setTheme } = useTheme();
+  const { colorTheme, setColorTheme } = useColorTheme();
   const collapsed = state === 'collapsed';
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  const cycleColorTheme = () => {
+    const currentIndex = colorThemes.findIndex(t => t.id === colorTheme);
+    const nextIndex = (currentIndex + 1) % colorThemes.length;
+    setColorTheme(colorThemes[nextIndex].id);
+    toast.success(`Theme: ${colorThemes[nextIndex].name}`);
   };
 
   const handleLogout = async () => {
@@ -166,6 +176,16 @@ const AppSidebar = () => {
       {/* Theme Toggle & User Footer */}
       <SidebarFooter className="border-t border-sidebar-border">
         <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={cycleColorTheme}
+              tooltip="Change color theme"
+              className="flex items-center gap-3"
+            >
+              <Palette className="h-4 w-4 shrink-0" />
+              {!collapsed && <span>{colorThemes.find(t => t.id === colorTheme)?.name || 'Theme'}</span>}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={toggleTheme}
