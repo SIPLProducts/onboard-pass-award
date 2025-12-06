@@ -3,7 +3,7 @@ import { useTheme } from 'next-themes';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useColorTheme, colorThemes } from '@/contexts/ColorThemeContext';
 import { NavLink } from '@/components/NavLink';
-import logo from '@/assets/kpc-learnhub-logo.png';
+import LogoUpload from '@/components/layout/LogoUpload';
 import {
   Sidebar,
   SidebarContent,
@@ -94,12 +94,7 @@ const AppSidebar = () => {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="h-14 border-b border-sidebar-border p-0 overflow-hidden bg-gradient-to-r from-primary/90 to-primary">
-        <div
-          className="flex h-full w-full cursor-pointer items-center justify-center"
-          onClick={() => navigate('/dashboard')}
-        >
-          <img src={logo} alt="KPC LearnHub" className={`object-cover transition-all duration-300 hover:opacity-90 ${collapsed ? "h-14 w-auto" : "h-14 w-full"}`} />
-        </div>
+        <LogoUpload collapsed={collapsed} />
       </SidebarHeader>
 
       <SidebarContent>
