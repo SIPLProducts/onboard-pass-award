@@ -186,7 +186,7 @@ export function useAdminData() {
     return { error: null };
   };
 
-  const getQuestions = async (courseId: string) => {
+  const getQuestions = useCallback(async (courseId: string) => {
     const { data, error } = await supabase
       .from('questions')
       .select('*')
@@ -200,7 +200,7 @@ export function useAdminData() {
       })) as Question[], 
       error 
     };
-  };
+  }, []);
 
   return {
     employees,
