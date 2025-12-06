@@ -1,15 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { useDemoContext } from '@/contexts/DemoContext';
 import logo from '@/assets/logo.png';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { BookOpen, Award, BarChart3, Users, ArrowRight, Play } from 'lucide-react';
+import { BookOpen, Award, BarChart3, Users, ArrowRight } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuthContext();
-  const { enableDemoMode } = useDemoContext();
 
   const handleGetStarted = () => {
     if (user) {
@@ -17,11 +15,6 @@ const Index = () => {
     } else {
       navigate('/login');
     }
-  };
-
-  const handleTryDemo = () => {
-    enableDemoMode();
-    navigate('/demo');
   };
 
   const features = [
@@ -92,15 +85,6 @@ const Index = () => {
                 Get Started
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={handleTryDemo}
-                className="px-8"
-              >
-                <Play className="mr-2 h-5 w-5" />
-                Try Demo
-              </Button>
             </div>
           </div>
         </div>
@@ -147,21 +131,13 @@ const Index = () => {
             <p className="mt-4 opacity-90">
               Join organizations that trust LearnHub for their employee development needs.
             </p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <div className="mt-8">
               <Button
                 size="lg"
                 onClick={handleGetStarted}
                 className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8"
               >
                 Start Free Today
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={handleTryDemo}
-                className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 px-8"
-              >
-                Explore Demo
               </Button>
             </div>
           </div>
