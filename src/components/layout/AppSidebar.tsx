@@ -99,7 +99,7 @@ const AppSidebar = () => {
           onClick={() => navigate('/dashboard')}
         >
           <div className={`flex items-center justify-center transition-all duration-300 hover:opacity-80 ${collapsed ? "h-12 w-12" : "h-28 w-28"}`}>
-            <img src={logo} alt="KPC" className={`object-contain ${collapsed ? "h-10 w-auto" : "h-20 w-auto"}`} />
+            <img src={logo} alt="KPC" className={`object-contain drop-shadow-[0_0_8px_rgba(var(--primary),0.5)] transition-all duration-300 hover:drop-shadow-[0_0_12px_rgba(var(--primary),0.7)] ${collapsed ? "h-10 w-auto" : "h-20 w-auto"}`} />
           </div>
         </div>
       </SidebarHeader>
