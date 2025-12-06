@@ -4,11 +4,12 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import logo from '@/assets/logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { Loader2, Mail, Lock, User, Building, BadgeCheck } from 'lucide-react';
+import { Loader2, Mail, Lock, User, Building, BadgeCheck, Shield } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -23,6 +24,7 @@ const signupSchema = z.object({
   fullName: z.string().min(2, 'Name must be at least 2 characters'),
   employeeId: z.string().min(3, 'Employee ID must be at least 3 characters'),
   department: z.string().optional(),
+  role: z.enum(['admin', 'employee']),
 });
 
 const Login = () => {
@@ -33,6 +35,7 @@ const Login = () => {
   const [fullName, setFullName] = useState('');
   const [employeeId, setEmployeeId] = useState('');
   const [department, setDepartment] = useState('');
+  const [role, setRole] = useState<'admin' | 'employee'>('employee');
   
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -84,6 +87,7 @@ const Login = () => {
       fullName,
       employeeId,
       department,
+      role,
     });
 
     if (!result.success) {
@@ -103,6 +107,7 @@ const Login = () => {
       full_name: fullName,
       employee_id: employeeId,
       department: department || undefined,
+      role,
     });
 
     if (error) {
@@ -278,17 +283,35 @@ const Login = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="department">Department</Label>
-                    <div className="relative">
-                      <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                      <Input
-                        id="department"
-                        placeholder="Engineering"
-                        value={department}
-                        onChange={(e) => setDepartment(e.target.value)}
-                        className="pl-10"
-                      />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="department">Department</Label>
+                      <div className="relative">
+                        <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground z-10" />
+                        <Input
+                          id="department"
+                          placeholder="Engineering"
+                          value={department}
+                          onChange={(e) => setDepartment(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="role">Role</Label>
+                      <div className="relative">
+                        <Shield className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground z-10" />
+                        <Select value={role} onValueChange={(val: 'admin' | 'employee') => setRole(val)}>
+                          <SelectTrigger className="pl-10">
+                            <SelectValue placeholder="Select role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="employee">Employee</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   </div>
 
