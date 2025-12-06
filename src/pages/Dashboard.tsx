@@ -6,6 +6,7 @@ import CourseCard from '@/components/courses/CourseCard';
 import LearningActivityChart from '@/components/dashboard/LearningActivityChart';
 import StreakTracker from '@/components/dashboard/StreakTracker';
 import AchievementBadges from '@/components/dashboard/AchievementBadges';
+import Leaderboard from '@/components/dashboard/Leaderboard';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BookOpen, Trophy, Clock, TrendingUp, AlertCircle, Filter } from 'lucide-react';
@@ -148,8 +149,9 @@ const Dashboard = () => {
 
         {/* Learning Activity & Streak Section */}
         <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
             <LearningActivityChart courses={courses} />
+            <Leaderboard />
           </div>
           <div className="space-y-6">
             <StreakTracker courses={courses} />
