@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTheme } from 'next-themes';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { NavLink } from '@/components/NavLink';
 import logo from '@/assets/logo.png';
@@ -36,6 +37,8 @@ import {
   ChevronUp,
   Shield,
   BookOpen,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -44,7 +47,12 @@ const AppSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { state } = useSidebar();
+  const { theme, setTheme } = useTheme();
   const collapsed = state === 'collapsed';
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
 
   const handleLogout = async () => {
     const { error } = await signOut();
@@ -159,8 +167,24 @@ const AppSidebar = () => {
         )}
       </SidebarContent>
 
-      {/* User Footer */}
+      {/* Theme Toggle & User Footer */}
       <SidebarFooter className="border-t border-sidebar-border">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={toggleTheme}
+              tooltip={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+              className="flex items-center gap-3"
+            >
+              {theme === 'dark' ? (
+                <Sun className="h-4 w-4 shrink-0" />
+              ) : (
+                <Moon className="h-4 w-4 shrink-0" />
+              )}
+              {!collapsed && <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>

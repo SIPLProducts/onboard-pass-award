@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "next-themes";
 import { AuthProvider, useAuthContext } from "@/contexts/AuthContext";
 import { DemoProvider } from "@/contexts/DemoContext";
 import DemoBanner from "@/components/demo/DemoBanner";
@@ -155,18 +156,20 @@ const AppRoutes = () => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <DemoProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <DemoBanner />
-            <AppRoutes />
-          </BrowserRouter>
-        </TooltipProvider>
-      </DemoProvider>
-    </AuthProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <AuthProvider>
+        <DemoProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <DemoBanner />
+              <AppRoutes />
+            </BrowserRouter>
+          </TooltipProvider>
+        </DemoProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
