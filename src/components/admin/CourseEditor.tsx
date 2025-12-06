@@ -79,7 +79,8 @@ const CourseEditor = ({ courseId, onClose }: CourseEditorProps) => {
     };
 
     loadCourse();
-  }, [courseId, courseStats, getQuestions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseId]);
 
   const addQuestion = () => {
     setQuestions((prev) => [
