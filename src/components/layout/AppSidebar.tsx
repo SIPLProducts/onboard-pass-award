@@ -95,18 +95,10 @@ const AppSidebar = () => {
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border">
         <div
-          className="flex cursor-pointer items-center gap-3 px-2 py-3"
+          className="flex cursor-pointer items-center justify-center px-2 py-3"
           onClick={() => navigate('/dashboard')}
         >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary">
-            <img src={logo} alt="LearnHub" className="h-6 w-auto" />
-          </div>
-          {!collapsed && (
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold text-sidebar-foreground">LearnHub</span>
-              <span className="text-xs text-sidebar-foreground/60">Learning Portal</span>
-            </div>
-          )}
+          <img src={logo} alt="KPC" className={collapsed ? "h-8 w-auto" : "h-10 w-auto"} />
         </div>
       </SidebarHeader>
 
