@@ -4,9 +4,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuthContext } from "@/contexts/AuthContext";
+import { DemoProvider } from "@/contexts/DemoContext";
+import DemoBanner from "@/components/demo/DemoBanner";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import DemoDashboard from "./pages/DemoDashboard";
 import CoursesPage from "./pages/CoursesPage";
 import CoursePage from "./pages/CoursePage";
 import TestPage from "./pages/TestPage";
@@ -62,6 +65,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
+      <Route path="/demo" element={<DemoDashboard />} />
       <Route
         path="/login"
         element={
@@ -150,13 +154,16 @@ const AppRoutes = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </TooltipProvider>
+      <DemoProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <DemoBanner />
+            <AppRoutes />
+          </BrowserRouter>
+        </TooltipProvider>
+      </DemoProvider>
     </AuthProvider>
   </QueryClientProvider>
 );
