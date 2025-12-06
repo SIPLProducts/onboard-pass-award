@@ -5,6 +5,7 @@ import AppLayout from '@/components/layout/AppLayout';
 import CourseCard from '@/components/courses/CourseCard';
 import LearningActivityChart from '@/components/dashboard/LearningActivityChart';
 import StreakTracker from '@/components/dashboard/StreakTracker';
+import AchievementBadges from '@/components/dashboard/AchievementBadges';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BookOpen, Trophy, Clock, TrendingUp, AlertCircle, Filter } from 'lucide-react';
@@ -150,7 +151,10 @@ const Dashboard = () => {
           <div className="lg:col-span-2">
             <LearningActivityChart courses={courses} />
           </div>
-          <StreakTracker courses={courses} />
+          <div className="space-y-6">
+            <StreakTracker courses={courses} />
+            <AchievementBadges courses={courses} />
+          </div>
         </div>
 
         {/* In Progress Section */}
