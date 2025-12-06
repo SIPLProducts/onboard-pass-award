@@ -84,7 +84,9 @@ const AppSidebar = () => {
           className="flex cursor-pointer items-center gap-3 px-2 py-3"
           onClick={() => navigate('/dashboard')}
         >
-          <img src={logo} alt="LearnHub" className="h-9 w-auto shrink-0" />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary">
+            <img src={logo} alt="LearnHub" className="h-6 w-auto" />
+          </div>
           {!collapsed && (
             <div className="flex flex-col">
               <span className="text-sm font-semibold text-sidebar-foreground">LearnHub</span>
