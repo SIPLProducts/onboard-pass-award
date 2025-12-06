@@ -98,7 +98,7 @@ const AppSidebar = () => {
           className="flex cursor-pointer items-center justify-center px-3 py-4"
           onClick={() => navigate('/dashboard')}
         >
-          <div className={`flex items-center justify-center overflow-hidden rounded-2xl border-2 border-sidebar-border bg-sidebar-accent p-4 transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/20 ${collapsed ? "h-12 w-12 p-2" : "h-20 w-20"}`}>
+          <div className={`flex items-center justify-center transition-all duration-300 hover:opacity-80 ${collapsed ? "h-12 w-12" : "h-20 w-20"}`}>
             <img src={logo} alt="KPC" className={`object-contain ${collapsed ? "h-8 w-auto" : "h-12 w-auto"}`} />
           </div>
         </div>
