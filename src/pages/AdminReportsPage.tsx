@@ -15,6 +15,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { BarChart3, AlertCircle, CheckCircle2, XCircle, TrendingUp } from 'lucide-react';
+import { PassRateChart } from '@/components/reports/PassRateChart';
+import { CoursePerformanceChart } from '@/components/reports/CoursePerformanceChart';
+import { AttemptsTimelineChart } from '@/components/reports/AttemptsTimelineChart';
+import { ScoreDistributionChart } from '@/components/reports/ScoreDistributionChart';
 
 const AdminReportsPage = () => {
   const navigate = useNavigate();
@@ -104,6 +108,14 @@ const AdminReportsPage = () => {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* KPI Charts */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <PassRateChart passed={totalPassed} failed={recentAttempts.length - totalPassed} />
+          <AttemptsTimelineChart attempts={recentAttempts} />
+          <CoursePerformanceChart courseStats={courseStats} />
+          <ScoreDistributionChart attempts={recentAttempts} />
         </div>
 
         {/* Recent Activity */}
