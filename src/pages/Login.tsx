@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { useDemoContext } from '@/contexts/DemoContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { BookOpen, Loader2, Mail, Lock, User, Building, BadgeCheck } from 'lucide-react';
+import { BookOpen, Loader2, Mail, Lock, User, Building, BadgeCheck, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -38,7 +39,13 @@ const Login = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { signIn, signUp } = useAuthContext();
+  const { enableDemoMode } = useDemoContext();
   const navigate = useNavigate();
+
+  const handleTryDemo = () => {
+    enableDemoMode();
+    navigate('/demo');
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -363,6 +370,28 @@ const Login = () => {
                 </form>
               </TabsContent>
             </Tabs>
+
+            <div className="mt-6 text-center">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-card px-2 text-muted-foreground">Or</span>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                className="mt-4 w-full"
+                onClick={handleTryDemo}
+              >
+                <Eye className="mr-2 h-4 w-4" />
+                Try Demo Mode
+              </Button>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Explore the platform with sample data
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>
