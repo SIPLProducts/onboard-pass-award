@@ -20,6 +20,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminCoursesPage from "./pages/AdminCoursesPage";
 import AdminEmployeesPage from "./pages/AdminEmployeesPage";
 import AdminReportsPage from "./pages/AdminReportsPage";
+import ProfileSettingsPage from "./pages/ProfileSettingsPage";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
 
@@ -146,6 +147,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <AdminReportsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <ProfileSettingsPage />
           </ProtectedRoute>
         }
       />
