@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   Award, 
@@ -15,6 +15,8 @@ import {
   Lock
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import confetti from 'canvas-confetti';
+import { toast } from '@/hooks/use-toast';
 
 interface Course {
   id: string;
@@ -45,6 +47,37 @@ interface AchievementBadgesProps {
 }
 
 const AchievementBadges = ({ courses }: AchievementBadgesProps) => {
+  const previousEarnedRef = useRef<Set<string>>(new Set());
+  const hasInitializedRef = useRef(false);
+
+  const triggerConfetti = useCallback(() => {
+    const duration = 3000;
+    const end = Date.now() + duration;
+
+    const colors = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
+
+    (function frame() {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: colors
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: colors
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    }());
+  }, []);
+
   const achievements = useMemo<Achievement[]>(() => {
     const completedCourses = courses.filter(c => c.certificate).length;
     const videosWatched = courses.filter(c => c.progress?.video_completed).length;
@@ -178,6 +211,38 @@ const AchievementBadges = ({ courses }: AchievementBadgesProps) => {
   }, [courses]);
 
   const earnedCount = achievements.filter(a => a.earned).length;
+  const earnedIds = useMemo(() => new Set(achievements.filter(a => a.earned).map(a => a.id)), [achievements]);
+
+  // Check for newly earned achievements
+  useEffect(() => {
+    if (!hasInitializedRef.current) {
+      // First render - just store current earned achievements
+      previousEarnedRef.current = earnedIds;
+      hasInitializedRef.current = true;
+      return;
+    }
+
+    // Find newly earned achievements
+    const newlyEarned = achievements.filter(
+      a => a.earned && !previousEarnedRef.current.has(a.id)
+    );
+
+    if (newlyEarned.length > 0) {
+      // Trigger confetti
+      triggerConfetti();
+
+      // Show toast for each new achievement
+      newlyEarned.forEach(achievement => {
+        toast({
+          title: "🎉 Achievement Unlocked!",
+          description: `${achievement.name}: ${achievement.description}`,
+        });
+      });
+
+      // Update previous earned
+      previousEarnedRef.current = earnedIds;
+    }
+  }, [earnedIds, achievements, triggerConfetti]);
 
   return (
     <Card className="animate-fade-in border-0 shadow-md">
