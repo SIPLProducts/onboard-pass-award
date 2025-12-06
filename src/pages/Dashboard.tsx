@@ -2,6 +2,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import { useCourses } from '@/hooks/useCourses';
 import AppLayout from '@/components/layout/AppLayout';
 import CourseCard from '@/components/courses/CourseCard';
+import LearningActivityChart from '@/components/dashboard/LearningActivityChart';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BookOpen, Trophy, Clock, TrendingUp, AlertCircle } from 'lucide-react';
@@ -119,6 +120,9 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Learning Activity Chart */}
+        <LearningActivityChart courses={courses} />
 
         {/* In Progress Section */}
         {stats.inProgress > 0 && (
