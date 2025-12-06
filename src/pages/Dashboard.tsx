@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useCourses } from '@/hooks/useCourses';
 import AppLayout from '@/components/layout/AppLayout';
@@ -5,19 +6,33 @@ import CourseCard from '@/components/courses/CourseCard';
 import LearningActivityChart from '@/components/dashboard/LearningActivityChart';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { BookOpen, Trophy, Clock, TrendingUp, AlertCircle } from 'lucide-react';
+import { BookOpen, Trophy, Clock, TrendingUp, AlertCircle, Filter } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import learningHero from '@/assets/learning-hero.png';
 
 const Dashboard = () => {
   const { user, profile } = useAuthContext();
   const { courses, isLoading, error } = useCourses(user?.id);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  // Extract unique categories from courses
+  const categories = useMemo(() => {
+    const uniqueCategories = [...new Set(courses.map(c => c.category))];
+    return uniqueCategories.sort();
+  }, [courses]);
+
+  // Filter courses based on selected category
+  const filteredCourses = useMemo(() => {
+    if (selectedCategory === 'all') return courses;
+    return courses.filter(c => c.category === selectedCategory);
+  }, [courses, selectedCategory]);
 
   const stats = {
-    totalCourses: courses.length,
-    completed: courses.filter((c) => c.certificate).length,
-    inProgress: courses.filter((c) => !c.certificate && (c.progress?.video_progress || 0) > 0).length,
+    totalCourses: filteredCourses.length,
+    completed: filteredCourses.filter((c) => c.certificate).length,
+    inProgress: filteredCourses.filter((c) => !c.certificate && (c.progress?.video_progress || 0) > 0).length,
     averageScore: (() => {
-      const scoresArray = courses.filter((c) => c.latestAttempt?.passed).map((c) => c.latestAttempt!.score);
+      const scoresArray = filteredCourses.filter((c) => c.latestAttempt?.passed).map((c) => c.latestAttempt!.score);
       return scoresArray.length > 0 ? Math.round(scoresArray.reduce((a, b) => a + b, 0) / scoresArray.length) : 0;
     })(),
   };
@@ -137,7 +152,7 @@ const Dashboard = () => {
           <section>
             <h2 className="mb-4 text-xl font-semibold text-foreground">Continue Learning</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {courses
+              {filteredCourses
                 .filter((c) => !c.certificate && (c.progress?.video_progress || 0) > 0)
                 .map((course) => (
                   <CourseCard key={course.id} course={course} />
@@ -148,18 +163,40 @@ const Dashboard = () => {
 
         {/* All Courses Section */}
         <section>
-          <h2 className="mb-4 text-xl font-semibold text-foreground">All Courses</h2>
-          {courses.length === 0 ? (
+          <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="text-xl font-semibold text-foreground">All Courses</h2>
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-muted-foreground" />
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-[180px] bg-background">
+                  <SelectValue placeholder="Filter by category" />
+                </SelectTrigger>
+                <SelectContent className="bg-background">
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          {filteredCourses.length === 0 ? (
             <Card className="border-dashed">
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <BookOpen className="h-12 w-12 text-muted-foreground" />
                 <h3 className="mt-4 text-lg font-medium">No courses available</h3>
-                <p className="text-sm text-muted-foreground">Check back later for new courses.</p>
+                <p className="text-sm text-muted-foreground">
+                  {selectedCategory !== 'all' 
+                    ? `No courses in "${selectedCategory}" category.` 
+                    : 'Check back later for new courses.'}
+                </p>
               </CardContent>
             </Card>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {courses.map((course, index) => (
+              {filteredCourses.map((course, index) => (
                 <div
                   key={course.id}
                   className="animate-slide-up"
