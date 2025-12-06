@@ -19,6 +19,7 @@ import { PassRateChart } from '@/components/reports/PassRateChart';
 import { CoursePerformanceChart } from '@/components/reports/CoursePerformanceChart';
 import { AttemptsTimelineChart } from '@/components/reports/AttemptsTimelineChart';
 import { ScoreDistributionChart } from '@/components/reports/ScoreDistributionChart';
+import { DepartmentPerformanceChart } from '@/components/reports/DepartmentPerformanceChart';
 
 const AdminReportsPage = () => {
   const navigate = useNavigate();
@@ -116,6 +117,7 @@ const AdminReportsPage = () => {
           <AttemptsTimelineChart attempts={recentAttempts} />
           <CoursePerformanceChart courseStats={courseStats} />
           <ScoreDistributionChart attempts={recentAttempts} />
+          <DepartmentPerformanceChart attempts={recentAttempts} />
         </div>
 
         {/* Recent Activity */}
