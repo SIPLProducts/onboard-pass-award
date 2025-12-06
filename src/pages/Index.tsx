@@ -9,13 +9,6 @@ const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuthContext();
 
-  const handleGetStarted = () => {
-    if (user) {
-      navigate('/dashboard');
-    } else {
-      navigate('/login');
-    }
-  };
 
   const features = [
     {
@@ -49,14 +42,9 @@ const Index = () => {
             <img src={logo} alt="LearnHub" className="h-10 w-auto" />
             <span className="text-xl font-bold text-foreground">LearnHub</span>
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" onClick={() => navigate('/login')}>
-              Sign In
-            </Button>
-            <Button onClick={handleGetStarted} className="gradient-primary text-primary-foreground">
-              Get Started
-            </Button>
-          </div>
+          <Button onClick={() => navigate('/login')} className="gradient-primary text-primary-foreground">
+            Sign In
+          </Button>
         </div>
       </header>
 
@@ -79,10 +67,10 @@ const Index = () => {
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <Button
                 size="lg"
-                onClick={handleGetStarted}
+                onClick={() => navigate('/login')}
                 className="gradient-primary text-primary-foreground shadow-lg hover:opacity-90 px-8"
               >
-                Get Started
+                Sign In
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
@@ -134,7 +122,7 @@ const Index = () => {
             <div className="mt-8">
               <Button
                 size="lg"
-                onClick={handleGetStarted}
+                onClick={() => navigate('/login')}
                 className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8"
               >
                 Start Free Today
