@@ -28,7 +28,7 @@ interface QuestionDraft {
 
 const CourseEditor = ({ courseId, onClose }: CourseEditorProps) => {
   const { user } = useAuthContext();
-  const { courseStats, createCourse, updateCourse, deleteCourse, saveQuestions, getQuestions } = useAdminData();
+  const { createCourse, updateCourse, deleteCourse, saveQuestions, getQuestions, getCourse } = useAdminData();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -50,7 +50,9 @@ const CourseEditor = ({ courseId, onClose }: CourseEditorProps) => {
     const loadCourse = async () => {
       if (courseId) {
         setIsLoading(true);
-        const course = courseStats.find((c) => c.course.id === courseId)?.course;
+        
+        // Fetch course directly from database
+        const { data: course } = await getCourse(courseId);
         
         if (course) {
           setTitle(course.title);
@@ -79,8 +81,7 @@ const CourseEditor = ({ courseId, onClose }: CourseEditorProps) => {
     };
 
     loadCourse();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseId]);
+  }, [courseId, getCourse, getQuestions]);
 
   const addQuestion = () => {
     setQuestions((prev) => [

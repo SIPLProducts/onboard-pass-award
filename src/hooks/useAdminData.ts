@@ -121,6 +121,32 @@ export function useAdminData() {
     }
   }, []);
 
+  const getQuestions = useCallback(async (courseId: string) => {
+    const { data, error } = await supabase
+      .from('questions')
+      .select('*')
+      .eq('course_id', courseId)
+      .order('order_index', { ascending: true });
+
+    return { 
+      data: (data || []).map(q => ({
+        ...q,
+        options: Array.isArray(q.options) ? q.options : []
+      })) as Question[], 
+      error 
+    };
+  }, []);
+
+  const getCourse = useCallback(async (courseId: string) => {
+    const { data, error } = await supabase
+      .from('courses')
+      .select('*')
+      .eq('id', courseId)
+      .single();
+
+    return { data: data as Course | null, error };
+  }, []);
+
   useEffect(() => {
     fetchAdminData();
   }, [fetchAdminData]);
@@ -186,22 +212,6 @@ export function useAdminData() {
     return { error: null };
   };
 
-  const getQuestions = useCallback(async (courseId: string) => {
-    const { data, error } = await supabase
-      .from('questions')
-      .select('*')
-      .eq('course_id', courseId)
-      .order('order_index', { ascending: true });
-
-    return { 
-      data: (data || []).map(q => ({
-        ...q,
-        options: Array.isArray(q.options) ? q.options : []
-      })) as Question[], 
-      error 
-    };
-  }, []);
-
   return {
     employees,
     courseStats,
@@ -214,5 +224,6 @@ export function useAdminData() {
     deleteCourse,
     saveQuestions,
     getQuestions,
+    getCourse,
   };
 }
