@@ -14,10 +14,10 @@ const CertificatesPage = () => {
 
   const completedCourses = courses.filter((c) => c.certificate);
 
-  const handleDownload = (course: typeof courses[0]) => {
+  const handleDownload = async (course: typeof courses[0]) => {
     if (!profile || !course.certificate) return;
 
-    generateCertificate({
+    await generateCertificate({
       id: course.certificate.certificate_number,
       courseId: course.id,
       courseName: course.title,

@@ -50,10 +50,10 @@ const CoursePage = () => {
 
   const canStartTest = videoCompleted || videoProgress >= 80 || course?.certificate;
 
-  const handleDownloadCertificate = () => {
+  const handleDownloadCertificate = async () => {
     if (!profile || !course || !course.certificate) return;
 
-    generateCertificate({
+    await generateCertificate({
       id: course.certificate.certificate_number,
       courseId: course.id,
       courseName: course.title,
