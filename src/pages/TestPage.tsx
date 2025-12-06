@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, ArrowRight, AlertCircle, Send } from 'lucide-react';
 import { TestAttempt } from '@/types/database';
-import { generateCertificate } from '@/utils/certificate';
+import { generateCertificate, openPrintableCertificate } from '@/utils/certificate';
 import { toast } from 'sonner';
 import {
   AlertDialog,
@@ -144,6 +144,20 @@ const TestPage = () => {
     });
   };
 
+  const handlePrintCertificate = () => {
+    if (!profile || !course || !testResult) return;
+
+    openPrintableCertificate({
+      id: `CERT-${Date.now()}`,
+      courseId: course.id,
+      courseName: course.title,
+      employeeName: profile.full_name,
+      employeeId: profile.employee_id,
+      score: testResult.score,
+      completedAt: testResult.completed_at,
+    });
+  };
+
   if (isLoading) {
     return (
       <AppLayout>
@@ -181,6 +195,7 @@ const TestPage = () => {
           course={course}
           onRetake={handleRetake}
           onDownloadCertificate={handleDownloadCertificate}
+          onPrintCertificate={handlePrintCertificate}
         />
       </AppLayout>
     );

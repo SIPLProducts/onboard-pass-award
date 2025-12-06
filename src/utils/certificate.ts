@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import logoImg from '@/assets/logo.png';
 
-interface CertificateData {
+export interface CertificateData {
   id: string;
   courseId: string;
   courseName: string;
@@ -10,6 +10,20 @@ interface CertificateData {
   score: number;
   completedAt: string;
 }
+
+// Open printable certificate in new tab
+export const openPrintableCertificate = (certificate: CertificateData) => {
+  const params = new URLSearchParams({
+    id: certificate.id,
+    course: certificate.courseName,
+    name: certificate.employeeName,
+    empId: certificate.employeeId,
+    score: certificate.score.toString(),
+    date: certificate.completedAt,
+  });
+  
+  window.open(`/certificate/print?${params.toString()}`, '_blank');
+};
 
 // Convert image URL to base64
 const getBase64FromUrl = async (url: string): Promise<string> => {
