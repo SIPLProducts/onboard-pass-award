@@ -93,7 +93,7 @@ const AppSidebar = () => {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="h-14 border-b border-sidebar-border p-0 overflow-hidden">
+      <SidebarHeader className="h-14 border-b border-sidebar-border p-0 overflow-hidden bg-gradient-to-r from-primary/90 to-primary">
         <div
           className="flex h-full w-full cursor-pointer items-center justify-center"
           onClick={() => navigate('/dashboard')}
