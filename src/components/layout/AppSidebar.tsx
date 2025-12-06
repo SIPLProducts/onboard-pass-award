@@ -95,11 +95,11 @@ const AppSidebar = () => {
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border">
         <div
-          className="flex cursor-pointer items-center justify-center px-2 py-3"
+          className="flex cursor-pointer items-center justify-center px-3 py-4"
           onClick={() => navigate('/dashboard')}
         >
-          <div className={`flex items-center justify-center rounded-lg bg-primary ${collapsed ? "h-10 w-10" : "h-16 w-16"}`}>
-            <img src={logo} alt="KPC" className={collapsed ? "h-7 w-auto" : "h-12 w-auto"} />
+          <div className={`flex items-center justify-center rounded-xl bg-primary p-2 ${collapsed ? "h-11 w-11" : "h-20 w-20"}`}>
+            <img src={logo} alt="KPC" className={collapsed ? "h-8 w-auto" : "h-14 w-auto"} />
           </div>
         </div>
       </SidebarHeader>
