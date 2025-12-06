@@ -49,6 +49,52 @@ interface AchievementBadgesProps {
 const AchievementBadges = ({ courses }: AchievementBadgesProps) => {
   const previousEarnedRef = useRef<Set<string>>(new Set());
   const hasInitializedRef = useRef(false);
+  const audioContextRef = useRef<AudioContext | null>(null);
+
+  const playAchievementSound = useCallback(() => {
+    try {
+      // Create audio context if it doesn't exist
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+      const audioContext = audioContextRef.current;
+
+      // Create a celebration sound sequence
+      const playNote = (frequency: number, startTime: number, duration: number, volume: number = 0.3) => {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.value = frequency;
+        oscillator.type = 'sine';
+
+        gainNode.gain.setValueAtTime(0, startTime);
+        gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.02);
+        gainNode.gain.linearRampToValueAtTime(volume * 0.7, startTime + duration * 0.5);
+        gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
+
+        oscillator.start(startTime);
+        oscillator.stop(startTime + duration);
+      };
+
+      const now = audioContext.currentTime;
+      
+      // Play a cheerful ascending arpeggio (C major chord notes)
+      playNote(523.25, now, 0.15, 0.25);        // C5
+      playNote(659.25, now + 0.1, 0.15, 0.25);  // E5
+      playNote(783.99, now + 0.2, 0.15, 0.25);  // G5
+      playNote(1046.50, now + 0.3, 0.3, 0.3);   // C6 (longer, louder finale)
+      
+      // Add a sparkle effect
+      playNote(1318.51, now + 0.35, 0.2, 0.15); // E6 sparkle
+      playNote(1567.98, now + 0.4, 0.25, 0.1);  // G6 sparkle
+
+    } catch (error) {
+      console.log('Audio playback not available:', error);
+    }
+  }, []);
 
   const triggerConfetti = useCallback(() => {
     const duration = 3000;
@@ -228,6 +274,9 @@ const AchievementBadges = ({ courses }: AchievementBadgesProps) => {
     );
 
     if (newlyEarned.length > 0) {
+      // Play achievement sound
+      playAchievementSound();
+      
       // Trigger confetti
       triggerConfetti();
 
@@ -242,7 +291,7 @@ const AchievementBadges = ({ courses }: AchievementBadgesProps) => {
       // Update previous earned
       previousEarnedRef.current = earnedIds;
     }
-  }, [earnedIds, achievements, triggerConfetti]);
+  }, [earnedIds, achievements, triggerConfetti, playAchievementSound]);
 
   return (
     <Card className="animate-fade-in border-0 shadow-md">
