@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
-import logo from '@/assets/logo.png';
+import logo from '@/assets/kpc-logo.png';
 import learningHero from '@/assets/learning-hero.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -149,9 +149,11 @@ const Login = () => {
         
         <div className="relative z-10 flex flex-col justify-start p-12 text-primary-foreground">
           <div className="mb-8 flex items-center gap-3 animate-fade-in" style={{ animationDelay: '0.1s', animationFillMode: 'backwards' }}>
-            <img src={logo} alt="LearnHub" className="h-14 w-auto" />
+            <div className="flex items-center justify-center rounded-xl bg-white px-4 py-2 shadow-md">
+              <img src={logo} alt="KPC" className="h-12 w-auto [filter:brightness(0)_saturate(100%)_invert(20%)_sepia(80%)_saturate(2000%)_hue-rotate(250deg)_brightness(90%)]" />
+            </div>
             <div>
-              <h1 className="text-2xl font-bold">LearnHub</h1>
+              <h1 className="text-2xl font-bold">KPC LearnHub</h1>
               <p className="text-sm opacity-80">Employee Learning Portal</p>
             </div>
           </div>
@@ -201,8 +203,8 @@ const Login = () => {
       <div className="flex w-full items-center justify-center p-8 lg:w-1/2">
         <Card className="w-full max-w-md border-0 shadow-xl">
           <CardHeader className="space-y-1 text-center">
-            <div className="mx-auto mb-4 lg:hidden">
-              <img src={logo} alt="LearnHub" className="h-12 w-auto" />
+            <div className="mx-auto mb-4 lg:hidden flex items-center justify-center rounded-xl bg-white px-4 py-2 shadow-md">
+              <img src={logo} alt="KPC" className="h-10 w-auto [filter:brightness(0)_saturate(100%)_invert(20%)_sepia(80%)_saturate(2000%)_hue-rotate(250deg)_brightness(90%)]" />
             </div>
             <CardTitle className="text-2xl font-bold">Welcome</CardTitle>
             <CardDescription>Sign in or create an account to continue</CardDescription>
