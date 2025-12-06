@@ -93,14 +93,12 @@ const AppSidebar = () => {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="h-14 border-b border-sidebar-border">
+      <SidebarHeader className="h-14 border-b border-sidebar-border p-0">
         <div
-          className="flex h-full cursor-pointer items-center justify-center px-2"
+          className="flex h-full w-full cursor-pointer items-center justify-center bg-white"
           onClick={() => navigate('/dashboard')}
         >
-          <div className={`flex items-center justify-center rounded-xl bg-white px-4 py-2 shadow-md transition-all duration-300 hover:opacity-80 ${collapsed ? "px-2 py-1" : ""}`}>
-            <img src={logo} alt="KPC" className={`object-contain [filter:brightness(0)_saturate(100%)_invert(20%)_sepia(80%)_saturate(2000%)_hue-rotate(250deg)_brightness(90%)] transition-all duration-300 ${collapsed ? "h-8 w-auto" : "h-10 w-auto"}`} />
-          </div>
+          <img src={logo} alt="KPC" className={`object-contain [filter:brightness(0)_saturate(100%)_invert(20%)_sepia(80%)_saturate(2000%)_hue-rotate(250deg)_brightness(90%)] transition-all duration-300 hover:opacity-80 ${collapsed ? "h-8 w-auto" : "h-10 w-auto"}`} />
         </div>
       </SidebarHeader>
 
