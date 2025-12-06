@@ -18,8 +18,9 @@ import {
   FileText,
   AlertCircle,
   Download,
+  Printer,
 } from 'lucide-react';
-import { generateCertificate } from '@/utils/certificate';
+import { generateCertificate, openPrintableCertificate } from '@/utils/certificate';
 
 const CoursePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -54,6 +55,20 @@ const CoursePage = () => {
     if (!profile || !course || !course.certificate) return;
 
     await generateCertificate({
+      id: course.certificate.certificate_number,
+      courseId: course.id,
+      courseName: course.title,
+      employeeName: profile.full_name,
+      employeeId: profile.employee_id,
+      score: course.certificate.score,
+      completedAt: course.certificate.issued_at,
+    });
+  };
+
+  const handlePrintCertificate = () => {
+    if (!profile || !course || !course.certificate) return;
+
+    openPrintableCertificate({
       id: course.certificate.certificate_number,
       courseId: course.id,
       courseName: course.title,
@@ -239,10 +254,15 @@ const CoursePage = () => {
 
               <div className="flex gap-3">
                 {course.certificate && (
-                  <Button variant="outline" onClick={handleDownloadCertificate}>
-                    <Download className="mr-2 h-4 w-4" />
-                    Certificate
-                  </Button>
+                  <>
+                    <Button variant="outline" onClick={handleDownloadCertificate}>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download
+                    </Button>
+                    <Button variant="outline" size="icon" onClick={handlePrintCertificate} title="Print Certificate">
+                      <Printer className="h-4 w-4" />
+                    </Button>
+                  </>
                 )}
                 <Button
                   size="lg"

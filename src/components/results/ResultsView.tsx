@@ -1,7 +1,7 @@
 import { TestAttempt, CourseWithProgress } from '@/types/database';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckCircle2, XCircle, RotateCcw, Download, Trophy, TrendingUp } from 'lucide-react';
+import { CheckCircle2, XCircle, RotateCcw, Download, Trophy, TrendingUp, Printer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ResultsViewProps {
@@ -9,9 +9,10 @@ interface ResultsViewProps {
   course: CourseWithProgress;
   onRetake: () => void;
   onDownloadCertificate: () => void;
+  onPrintCertificate?: () => void;
 }
 
-const ResultsView = ({ result, course, onRetake, onDownloadCertificate }: ResultsViewProps) => {
+const ResultsView = ({ result, course, onRetake, onDownloadCertificate, onPrintCertificate }: ResultsViewProps) => {
   const { passed, score, correct_answers, total_questions } = result;
 
   return (
@@ -81,14 +82,26 @@ const ResultsView = ({ result, course, onRetake, onDownloadCertificate }: Result
       {/* Actions */}
       <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
         {passed ? (
-          <Button
-            size="lg"
-            className="gradient-primary text-primary-foreground shadow-lg hover:opacity-90"
-            onClick={onDownloadCertificate}
-          >
-            <Download className="mr-2 h-5 w-5" />
-            Download Certificate
-          </Button>
+          <>
+            <Button
+              size="lg"
+              className="gradient-primary text-primary-foreground shadow-lg hover:opacity-90"
+              onClick={onDownloadCertificate}
+            >
+              <Download className="mr-2 h-5 w-5" />
+              Download Certificate
+            </Button>
+            {onPrintCertificate && (
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={onPrintCertificate}
+              >
+                <Printer className="mr-2 h-5 w-5" />
+                Print
+              </Button>
+            )}
+          </>
         ) : (
           <>
             <Button

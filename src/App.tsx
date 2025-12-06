@@ -14,6 +14,7 @@ import CoursesPage from "./pages/CoursesPage";
 import CoursePage from "./pages/CoursePage";
 import TestPage from "./pages/TestPage";
 import CertificatesPage from "./pages/CertificatesPage";
+import PrintCertificate from "./pages/PrintCertificate";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminCoursesPage from "./pages/AdminCoursesPage";
 import AdminEmployeesPage from "./pages/AdminEmployeesPage";
@@ -66,6 +67,7 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/demo" element={<DemoDashboard />} />
+      <Route path="/certificate/print" element={<PrintCertificate />} />
       <Route
         path="/login"
         element={

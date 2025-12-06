@@ -4,9 +4,9 @@ import AppLayout from '@/components/layout/AppLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Award, Download, Calendar, Trophy, AlertCircle } from 'lucide-react';
+import { Award, Download, Calendar, Trophy, Printer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { generateCertificate } from '@/utils/certificate';
+import { generateCertificate, openPrintableCertificate } from '@/utils/certificate';
 
 const CertificatesPage = () => {
   const { user, profile } = useAuthContext();
@@ -18,6 +18,20 @@ const CertificatesPage = () => {
     if (!profile || !course.certificate) return;
 
     await generateCertificate({
+      id: course.certificate.certificate_number,
+      courseId: course.id,
+      courseName: course.title,
+      employeeName: profile.full_name,
+      employeeId: profile.employee_id,
+      score: course.certificate.score,
+      completedAt: course.certificate.issued_at,
+    });
+  };
+
+  const handlePrint = (course: typeof courses[0]) => {
+    if (!profile || !course.certificate) return;
+
+    openPrintableCertificate({
       id: course.certificate.certificate_number,
       courseId: course.id,
       courseName: course.title,
@@ -99,14 +113,24 @@ const CertificatesPage = () => {
                       {new Date(course.certificate?.issued_at || '').toLocaleDateString()}
                     </span>
                   </div>
-                  <Button
-                    className="w-full"
-                    variant="outline"
-                    onClick={() => handleDownload(course)}
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Download Certificate
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      className="flex-1"
+                      variant="outline"
+                      onClick={() => handleDownload(course)}
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Download
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handlePrint(course)}
+                      title="Print Certificate"
+                    >
+                      <Printer className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
