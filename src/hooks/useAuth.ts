@@ -127,8 +127,30 @@ export function useAuth() {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    return { error };
+    try {
+      const { error } = await supabase.auth.signOut();
+      // Even if signOut fails (e.g., session already expired), clear local state
+      setAuthState({
+        user: null,
+        session: null,
+        profile: null,
+        role: null,
+        isLoading: false,
+        isAdmin: false,
+      });
+      return { error: null };
+    } catch (error) {
+      // Clear state anyway on error
+      setAuthState({
+        user: null,
+        session: null,
+        profile: null,
+        role: null,
+        isLoading: false,
+        isAdmin: false,
+      });
+      return { error: null };
+    }
   };
 
   const refreshUserData = useCallback(() => {
