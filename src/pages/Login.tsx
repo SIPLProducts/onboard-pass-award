@@ -138,8 +138,8 @@ const Login = () => {
         {/* Background pattern */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-40" />
         
-        {/* Hero Image */}
-        <div className="absolute bottom-0 right-0 w-[85%] h-[60%] pointer-events-none">
+        {/* Hero Image with float animation */}
+        <div className="absolute bottom-0 right-0 w-[85%] h-[60%] pointer-events-none animate-[float_6s_ease-in-out_infinite]">
           <img 
             src={learningHero} 
             alt="Learning illustration" 
@@ -148,7 +148,7 @@ const Login = () => {
         </div>
         
         <div className="relative z-10 flex flex-col justify-start p-12 text-primary-foreground">
-          <div className="mb-8 flex items-center gap-3">
+          <div className="mb-8 flex items-center gap-3 animate-fade-in" style={{ animationDelay: '0.1s', animationFillMode: 'backwards' }}>
             <img src={logo} alt="LearnHub" className="h-14 w-auto" />
             <div>
               <h1 className="text-2xl font-bold">LearnHub</h1>
@@ -156,29 +156,38 @@ const Login = () => {
             </div>
           </div>
 
-          <h2 className="text-4xl font-bold leading-tight">
+          <h2 className="text-4xl font-bold leading-tight animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'backwards' }}>
             Empower Your
             <br />
             Professional Growth
           </h2>
-          <p className="mt-4 max-w-md text-lg opacity-90">
+          <p className="mt-4 max-w-md text-lg opacity-90 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}>
             Access curated courses, complete certifications, and track your learning journey all in one place.
           </p>
 
           <div className="mt-8 space-y-3">
-            <div className="flex items-center gap-3 bg-primary-foreground/10 backdrop-blur-sm rounded-lg px-4 py-2 w-fit">
+            <div 
+              className="flex items-center gap-3 bg-primary-foreground/10 backdrop-blur-sm rounded-lg px-4 py-2 w-fit animate-fade-in hover-scale cursor-default"
+              style={{ animationDelay: '0.4s', animationFillMode: 'backwards' }}
+            >
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-foreground/20">
                 <span className="text-base">📚</span>
               </div>
               <span className="text-sm font-medium">Interactive video courses with assessments</span>
             </div>
-            <div className="flex items-center gap-3 bg-primary-foreground/10 backdrop-blur-sm rounded-lg px-4 py-2 w-fit">
+            <div 
+              className="flex items-center gap-3 bg-primary-foreground/10 backdrop-blur-sm rounded-lg px-4 py-2 w-fit animate-fade-in hover-scale cursor-default"
+              style={{ animationDelay: '0.5s', animationFillMode: 'backwards' }}
+            >
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-foreground/20">
                 <span className="text-base">🎓</span>
               </div>
               <span className="text-sm font-medium">Earn certificates upon completion</span>
             </div>
-            <div className="flex items-center gap-3 bg-primary-foreground/10 backdrop-blur-sm rounded-lg px-4 py-2 w-fit">
+            <div 
+              className="flex items-center gap-3 bg-primary-foreground/10 backdrop-blur-sm rounded-lg px-4 py-2 w-fit animate-fade-in hover-scale cursor-default"
+              style={{ animationDelay: '0.6s', animationFillMode: 'backwards' }}
+            >
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-foreground/20">
                 <span className="text-base">📈</span>
               </div>
