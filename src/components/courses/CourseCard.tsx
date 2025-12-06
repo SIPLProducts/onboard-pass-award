@@ -1,4 +1,4 @@
-import { Course } from '@/types/lms';
+import { CourseWithProgress } from '@/types/database';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -6,14 +6,24 @@ import { Clock, CheckCircle2, PlayCircle, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface CourseCardProps {
-  course: Course;
+  course: CourseWithProgress;
 }
 
 const CourseCard = ({ course }: CourseCardProps) => {
   const navigate = useNavigate();
 
+  const getStatus = () => {
+    if (course.certificate) return 'completed';
+    if (course.progress?.video_progress && course.progress.video_progress > 0) return 'in_progress';
+    if (course.latestAttempt) return 'in_progress';
+    return 'not_started';
+  };
+
+  const status = getStatus();
+  const progressValue = course.progress?.video_progress || 0;
+
   const getStatusBadge = () => {
-    switch (course.status) {
+    switch (status) {
       case 'completed':
         return (
           <Badge className="bg-success/10 text-success border-success/20 hover:bg-success/20">
@@ -43,6 +53,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
       Onboarding: 'bg-primary/10 text-primary',
       Compliance: 'bg-destructive/10 text-destructive',
       'Professional Development': 'bg-accent/10 text-accent-foreground',
+      General: 'bg-muted text-muted-foreground',
     };
     return colors[category] || 'bg-muted text-muted-foreground';
   };
@@ -66,10 +77,12 @@ const CourseCard = ({ course }: CourseCardProps) => {
           <Badge variant="outline" className={getCategoryColor(course.category)}>
             {course.category}
           </Badge>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Clock className="h-3 w-3" />
-            {course.duration}
-          </div>
+          {course.duration && (
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Clock className="h-3 w-3" />
+              {course.duration}
+            </div>
+          )}
         </div>
 
         <h3 className="mb-2 line-clamp-2 text-lg font-semibold text-foreground transition-colors group-hover:text-primary">
@@ -78,20 +91,20 @@ const CourseCard = ({ course }: CourseCardProps) => {
 
         <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{course.description}</p>
 
-        {course.status !== 'not_started' && (
+        {status !== 'not_started' && (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">Progress</span>
-              <span className="font-medium text-foreground">{course.progress}%</span>
+              <span className="font-medium text-foreground">{progressValue}%</span>
             </div>
-            <Progress value={course.progress} className="h-2" />
+            <Progress value={progressValue} className="h-2" />
           </div>
         )}
 
-        {course.status === 'completed' && course.score && (
+        {course.certificate && course.latestAttempt && (
           <div className="mt-3 flex items-center justify-between rounded-lg bg-success/10 px-3 py-2">
             <span className="text-sm text-success">Score</span>
-            <span className="font-semibold text-success">{course.score}%</span>
+            <span className="font-semibold text-success">{course.latestAttempt.score}%</span>
           </div>
         )}
       </CardContent>

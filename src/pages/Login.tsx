@@ -1,35 +1,127 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuthContext } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, Loader2, Mail, Lock } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { BookOpen, Loader2, Mail, Lock, User, Building, BadgeCheck } from 'lucide-react';
 import { toast } from 'sonner';
+import { z } from 'zod';
+
+const loginSchema = z.object({
+  email: z.string().email('Please enter a valid email'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
+
+const signupSchema = z.object({
+  email: z.string().email('Please enter a valid email'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  fullName: z.string().min(2, 'Name must be at least 2 characters'),
+  employeeId: z.string().min(3, 'Employee ID must be at least 3 characters'),
+  department: z.string().optional(),
+  role: z.enum(['employee', 'admin']),
+});
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [employeeId, setEmployeeId] = useState('');
+  const [department, setDepartment] = useState('');
+  const [role, setRole] = useState<'employee' | 'admin'>('employee');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const { signIn, signUp } = useAuthContext();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+
+    const result = loginSchema.safeParse({ email: loginEmail, password: loginPassword });
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
     setIsLoading(true);
 
-    const success = await login(email, password);
+    const { error } = await signIn(loginEmail, loginPassword);
 
-    if (success) {
+    if (error) {
+      toast.error('Login failed', {
+        description: error.message || 'Please check your credentials and try again.',
+      });
+    } else {
       toast.success('Welcome back!', {
         description: 'You have successfully signed in.',
       });
       navigate('/dashboard');
-    } else {
-      toast.error('Login failed', {
-        description: 'Please check your credentials and try again.',
+    }
+
+    setIsLoading(false);
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrors({});
+
+    const result = signupSchema.safeParse({
+      email: signupEmail,
+      password: signupPassword,
+      fullName,
+      employeeId,
+      department,
+      role,
+    });
+
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message;
+        }
       });
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setIsLoading(true);
+
+    const { error } = await signUp(signupEmail, signupPassword, {
+      full_name: fullName,
+      employee_id: employeeId,
+      department: department || undefined,
+      role,
+    });
+
+    if (error) {
+      if (error.message?.includes('already registered')) {
+        toast.error('Account exists', {
+          description: 'An account with this email already exists. Please sign in instead.',
+        });
+      } else {
+        toast.error('Signup failed', {
+          description: error.message || 'Please try again.',
+        });
+      }
+    } else {
+      toast.success('Account created!', {
+        description: 'You can now access your learning dashboard.',
+      });
+      navigate('/dashboard');
     }
 
     setIsLoading(false);
@@ -83,70 +175,194 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Right side - Login form */}
+      {/* Right side - Auth forms */}
       <div className="flex w-full items-center justify-center p-8 lg:w-1/2">
         <Card className="w-full max-w-md border-0 shadow-xl">
           <CardHeader className="space-y-1 text-center">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl gradient-primary lg:hidden">
               <BookOpen className="h-6 w-6 text-primary-foreground" />
             </div>
-            <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-            <CardDescription>Sign in to access your learning dashboard</CardDescription>
+            <CardTitle className="text-2xl font-bold">Welcome</CardTitle>
+            <CardDescription>Sign in or create an account to continue</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@company.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-              </div>
+            <Tabs defaultValue="login" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="login">Sign In</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              </TabsList>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-              </div>
+              <TabsContent value="login">
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="login-email">Email</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        id="login-email"
+                        type="email"
+                        placeholder="you@company.com"
+                        value={loginEmail}
+                        onChange={(e) => setLoginEmail(e.target.value)}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                  </div>
 
-              <Button
-                type="submit"
-                className="w-full gradient-primary text-primary-foreground shadow-lg hover:opacity-90"
-                size="lg"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Signing in...
-                  </>
-                ) : (
-                  'Sign in'
-                )}
-              </Button>
-            </form>
+                  <div className="space-y-2">
+                    <Label htmlFor="login-password">Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        id="login-password"
+                        type="password"
+                        placeholder="Enter your password"
+                        value={loginPassword}
+                        onChange={(e) => setLoginPassword(e.target.value)}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                    {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+                  </div>
 
-            <div className="mt-6 text-center text-sm text-muted-foreground">
-              <p>Demo credentials: any email + 4+ character password</p>
-            </div>
+                  <Button
+                    type="submit"
+                    className="w-full gradient-primary text-primary-foreground shadow-lg hover:opacity-90"
+                    size="lg"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Signing in...
+                      </>
+                    ) : (
+                      'Sign in'
+                    )}
+                  </Button>
+                </form>
+              </TabsContent>
+
+              <TabsContent value="signup">
+                <form onSubmit={handleSignup} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="full-name">Full Name</Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          id="full-name"
+                          placeholder="John Doe"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          className="pl-10"
+                          required
+                        />
+                      </div>
+                      {errors.fullName && <p className="text-sm text-destructive">{errors.fullName}</p>}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="employee-id">Employee ID</Label>
+                      <div className="relative">
+                        <BadgeCheck className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          id="employee-id"
+                          placeholder="EMP-001"
+                          value={employeeId}
+                          onChange={(e) => setEmployeeId(e.target.value)}
+                          className="pl-10"
+                          required
+                        />
+                      </div>
+                      {errors.employeeId && <p className="text-sm text-destructive">{errors.employeeId}</p>}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="department">Department</Label>
+                      <div className="relative">
+                        <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          id="department"
+                          placeholder="Engineering"
+                          value={department}
+                          onChange={(e) => setDepartment(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="role">Role</Label>
+                      <Select value={role} onValueChange={(v) => setRole(v as 'employee' | 'admin')}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="employee">Employee</SelectItem>
+                          <SelectItem value="admin">Admin / HR</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-email">Email</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        id="signup-email"
+                        type="email"
+                        placeholder="you@company.com"
+                        value={signupEmail}
+                        onChange={(e) => setSignupEmail(e.target.value)}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-password">Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        id="signup-password"
+                        type="password"
+                        placeholder="Create a password"
+                        value={signupPassword}
+                        onChange={(e) => setSignupPassword(e.target.value)}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                    {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full gradient-primary text-primary-foreground shadow-lg hover:opacity-90"
+                    size="lg"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating account...
+                      </>
+                    ) : (
+                      'Create Account'
+                    )}
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>

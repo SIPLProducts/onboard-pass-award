@@ -1,18 +1,18 @@
-import { TestResult, Course } from '@/types/lms';
+import { TestAttempt, CourseWithProgress } from '@/types/database';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle2, XCircle, RotateCcw, Download, Trophy, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ResultsViewProps {
-  result: TestResult;
-  course: Course;
+  result: TestAttempt;
+  course: CourseWithProgress;
   onRetake: () => void;
   onDownloadCertificate: () => void;
 }
 
 const ResultsView = ({ result, course, onRetake, onDownloadCertificate }: ResultsViewProps) => {
-  const { passed, score, correctAnswers, totalQuestions } = result;
+  const { passed, score, correct_answers, total_questions } = result;
 
   return (
     <div className="mx-auto max-w-2xl animate-fade-in space-y-8 py-8">
@@ -38,7 +38,7 @@ const ResultsView = ({ result, course, onRetake, onDownloadCertificate }: Result
         <p className="mt-2 text-lg text-muted-foreground">
           {passed
             ? `You have successfully completed "${course.title}"`
-            : `You scored ${score}%. The minimum required is ${course.passPercentage}%.`}
+            : `You scored ${score}%. The minimum required is ${course.pass_percentage}%.`}
         </p>
       </div>
 
@@ -53,15 +53,15 @@ const ResultsView = ({ result, course, onRetake, onDownloadCertificate }: Result
         <CardContent className="p-6">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <p className="text-2xl font-bold text-foreground">{totalQuestions}</p>
+              <p className="text-2xl font-bold text-foreground">{total_questions}</p>
               <p className="text-sm text-muted-foreground">Total Questions</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-success">{correctAnswers}</p>
+              <p className="text-2xl font-bold text-success">{correct_answers}</p>
               <p className="text-sm text-muted-foreground">Correct</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-destructive">{totalQuestions - correctAnswers}</p>
+              <p className="text-2xl font-bold text-destructive">{total_questions - correct_answers}</p>
               <p className="text-sm text-muted-foreground">Incorrect</p>
             </div>
           </div>
@@ -72,7 +72,7 @@ const ResultsView = ({ result, course, onRetake, onDownloadCertificate }: Result
               <span className="font-medium text-foreground">Pass Requirement</span>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
-              Minimum {course.passPercentage}% required to pass this course
+              Minimum {course.pass_percentage}% required to pass this course
             </p>
           </div>
         </CardContent>
