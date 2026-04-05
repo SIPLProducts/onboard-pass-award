@@ -46,7 +46,7 @@ const VideoPlayer = ({ videoUrl, onComplete, onProgress }: VideoPlayerProps) => 
     const estimatedDuration = 300; // 5 minutes default
     setDuration(estimatedDuration);
     
-    let progressInterval: NodeJS.Timeout;
+    let progressInterval: ReturnType<typeof setInterval>;
     
     if (isPlaying) {
       progressInterval = setInterval(() => {
